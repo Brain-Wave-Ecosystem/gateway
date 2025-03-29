@@ -7,6 +7,7 @@ services:
     image: hashicorp/consul:1.20
     ports:
       - "8500:8500"      # GUI / API
+      - "8600:8600/udp"  # DNS Consul (optional)
     volumes:
       - bw_consul_data:/consul/data
       - ../../configs/consul.hcl:/consul/config/consul.hcl
