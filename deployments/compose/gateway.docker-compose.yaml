@@ -1,0 +1,46 @@
+version: "3"
+
+services:
+
+  consul:
+    container_name: consul
+    image: hashicorp/consul:1.20
+    ports:
+      - "8500:8500"      # GUI / API
+    volumes:
+      - bw_consul_data:/consul/data
+      - ../../configs/consul.hcl:/consul/config/consul.hcl
+    command: agent -dev -client=0.0.0.0 # Only for development mode
+    networks:
+      - bw_gateway-net
+
+  api-gateway:
+    container_name: gateway
+    build:
+      context: ../..
+      dockerfile: ./deployments/docker/gateway.dockerfile
+    environment:
+      LOCAL: ${LOCAL}
+      LOG_LEVEL: ${LOG_LEVEL}
+      HTTP_PORT: ${HTTP_PORT}
+      TCP_PORT: ${TCP_PORT}
+      GRPC_PORT: ${GRPC_PORT}
+      WS_PORT: ${WS_PORT}
+      START_TIMEOUT: ${START_TIMEOUT}
+      SHUTDOWN_TIMEOUT: ${SHUTDOWN_TIMEOUT}
+      CONSUL_URL: ${CONSUL_URL}
+    ports:
+      - ${HTTP_PORT}:${HTTP_PORT}
+      - ${TCP_PORT}:${TCP_PORT}
+      - ${GRPC_PORT}:${GRPC_PORT}
+      - ${WS_PORT}:${WS_PORT}
+    networks:
+      - bw_gateway-net
+    depends_on:
+      - consul
+
+networks:
+  bw_gateway-net:
+
+volumes:
+  bw_consul_data:
