@@ -47,7 +47,7 @@ func NewServer(_ context.Context, cfg *config.Config) (*Server, error) {
 			RegisterFunc: auth.RegisterAuthServiceHandler,
 		},
 		{
-			Address:      "auth_service",
+			Address:      "courses_service",
 			RegisterFunc: courses.RegisterCoursesServiceHandler,
 		},
 	}

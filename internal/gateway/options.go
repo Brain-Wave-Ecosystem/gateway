@@ -1,6 +1,7 @@
 package gateway
 
 import (
+	"github.com/Brain-Wave-Ecosystem/gateway/internal/middlewares/logging"
 	"github.com/Brain-Wave-Ecosystem/go-common/pkg/grpcx/errors"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/siderolabs/grpc-proxy/proxy"
@@ -38,6 +39,7 @@ func standardDialOptions(_ *zap.Logger) []grpc.DialOption {
 func standardServerMuxOptions(logger *zap.Logger) []runtime.ServeMuxOption {
 	return []runtime.ServeMuxOption{
 		runtime.WithErrorHandler(errors.NewCustomErrorHandler(logger)),
+		runtime.WithMiddlewares(logging.NewLoggingMiddleware(logger)),
 	}
 }
 
